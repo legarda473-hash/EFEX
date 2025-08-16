@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Predicción de Total Interactions</title>
+    <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f7f7f7;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            border-radius: 8px;
+        }
+        h1 {
+            text-align: center;
+            color: #4CAF50;
+            font-size: 36px;
+            margin-bottom: 30px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            font-size: 16px;
+            margin-bottom: 5px;
+            display: block;
+            color: #333;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            font-size: 18px;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            width: 100%;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .result {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 24px;
+            color: #333;
+            font-weight: bold;
+        }
+        #qrcode {
+            margin: 20px auto;
+            text-align: center;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 14px;
+            color: #777;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Predicción de Total Interactions</h1>
+
+        <div class="form-group">
+            <label for="page_likes">Page Total Likes:</label>
+            <input type="number" id="page_likes" value="1000">
+        </div>
+
+        <div class="form-group">
+            <label for="type_photo">Type Photo (0 o 1):</label>
+            <input type="number" id="type_photo" value="0" min="0" max="1">
+        </div>
+
+        <div class="form-group">
+            <label for="type_status">Type Status (0 o 1):</label>
+            <input type="number" id="type_status" value="0" min="0" max="1">
+        </div>
+
+        <div class="form-group">
+            <label for="type_video">Type Video (0 o 1):</label>
+            <input type="number" id="type_video" value="0" min="0" max="1">
+        </div>
+
+        <div class="form-group">
+            <label for="category2">Category 2 (0 o 1):</label>
+            <input type="number" id="category2" value="0" min="0" max="1">
+        </div>
+
+        <div class="form-group">
+            <label for="category3">Category 3 (0 o 1):</label>
+            <input type="number" id="category3" value="0" min="0" max="1">
+        </div>
+
+        <div class="form-group">
+            <label for="post_month">Post Month:</label>
+            <input type="number" id="post_month" value="1">
+        </div>
+
+        <div class="form-group">
+            <label for="post_weekday">Post Weekday (1 = Monday, 7 = Sunday):</label>
+            <input type="number" id="post_weekday" value="1" min="1" max="7">
+        </div>
+
+        <div class="form-group">
+            <label for="post_hour">Post Hour (0-23):</label>
+            <input type="number" id="post_hour" value="12" min="0" max="23">
+        </div>
+
+        <div class="form-group">
+            <label for="paid">Paid (0 o 1):</label>
+            <input type="number" id="paid" value="0" min="0" max="1">
+        </div>
+
+        <button onclick="calculatePrediction()">Calcular Predicción</button>
+
+        <div id="result" class="result"></div>
+        
+        <div id="qrcode"></div>
+        
+    </div>
+
+    <div class="footer">
+        <p>Generado por <strong>Tu Empresa</strong></p>
+    </div>
+
+    <script>
+        function calculatePrediction() {
+            // Obtener los valores de los inputs
+            var pageLikes = parseFloat(document.getElementById("page_likes").value);
+            var typePhoto = parseFloat(document.getElementById("type_photo").value);
+            var typeStatus = parseFloat(document.getElementById("type_status").value);
+            var typeVideo = parseFloat(document.getElementById("type_video").value);
+            var category2 = parseFloat(document.getElementById("category2").value);
+            var category3 = parseFloat(document.getElementById("category3").value);
+            var postMonth = parseFloat(document.getElementById("post_month").value);
+            var postWeekday = parseFloat(document.getElementById("post_weekday").value);
+            var postHour = parseFloat(document.getElementById("post_hour").value);
+            var paid = parseFloat(document.getElementById("paid").value);
+
+            // Aplicar la ecuación de regresión lineal
+            var totalInteractions = 1636.463 - (0.009 * pageLikes) +
+                                    (548.966 * typePhoto) +
+                                    (2014.159 * typeStatus) +
+                                    (1473.303 * typeVideo) -
+                                    (128.565 * category2) -
+                                    (200.52 * category3) -
+                                    (29.297 * postMonth) -
+                                    (25.253 * postWeekday) -
+                                    (5.938 * postHour) +
+                                    (197.73 * paid);
+
+            // Mostrar el resultado en el HTML
+            document.getElementById("result").innerHTML = "Predicción de Total Interactions: " + totalInteractions.toFixed(2);
+
+            // Generar el QR con la URL de la página
+            var qrcode = new QRCode(document.getElementById("qrcode"), {
+                text: window.location.href, // URL actual de la página
+                width: 128,
+                height: 128
+            });
+        }
+    </script>
+
+</body>
+</html>
